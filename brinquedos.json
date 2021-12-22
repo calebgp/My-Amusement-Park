@@ -1,0 +1,49 @@
+{
+    "brinquedos":[
+{
+"nome":"Bate-Bate",
+"custo":300000,
+"popularidade": 5,
+"ingresso": 15,
+"espaco":200,
+"quantidademax":2,
+"code":"b-b"
+},
+{
+"nome":"Carrossel",
+"custo":9000000,
+"popularidade": 6,
+"ingresso":20,
+"espaco":150,
+"quantidademax": 2,
+"code": "crr"
+},
+{
+"nome":"Kami-Kaze",
+"custo":1500000,
+"popularidade":8,
+"ingresso" : 20,
+"espaco":400,
+"quantidademax":1,
+"code": "k-k"
+},
+{
+"nome":"Roda-Gigante",
+"custo":"800000",
+"popularidade":7.5,
+"ingresso": 10,
+"espaco":550,
+"quantidademax": 1,
+"code":"r-g"
+},
+{
+"nome":"Montanha-Russa",
+"custo":"1000000",
+"popularidade": 8.5,
+"ingresso": 17,
+"espaco": 700,
+"quantidademax": 3,
+"code": "m-r"
+}
+]}
+
