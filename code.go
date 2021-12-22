@@ -20,13 +20,13 @@ type Brinquedos struct {
 	Brinquedos []Brinquedo `json:"brinquedos"`
 }
 type Brinquedo struct {
-	nome          string  `json:"nome"`
-	custo         int     `json:"custo"`
-	popularidade  float64 `json:"popularidade"`
-	ingresso      int     `json:"ingresso"`
-	espaco        int     `json:"espaco"`
-	quantidademax int     `json:"quantidademax"`
-	code          string  `json:"code"`
+	Nome          string  `json:"nome"`
+	Custo         int     `json:"custo"`
+	Popularidade  float64 `json:"popularidade"`
+	Ingresso      int     `json:"ingresso"`
+	Espaco        int     `json:"espaco"`
+	QuantidadeMax int     `json:"quantidademax"`
+	Code          string  `json:"code"`
 }
 type Quantidade struct {
 	Montanha  int
@@ -50,13 +50,13 @@ func main() {
 	json.Unmarshal(textoFile, &brinquedos)
 	for e := 1; e < len(brinquedos.Brinquedos); e++ {
 		brinquedo := Brinquedo{
-			nome:          brinquedos.Brinquedos[e].nome,
-			custo:         brinquedos.Brinquedos[e].custo,
-			popularidade:  brinquedos.Brinquedos[e].popularidade,
-			ingresso:      brinquedos.Brinquedos[e].ingresso,
-			espaco:        brinquedos.Brinquedos[e].espaco,
-			quantidademax: brinquedos.Brinquedos[e].quantidademax,
-			code:          brinquedos.Brinquedos[e].code,
+			Nome:          brinquedos.Brinquedos[e].Nome,
+			Custo:         brinquedos.Brinquedos[e].Custo,
+			Popularidade:  brinquedos.Brinquedos[e].Popularidade,
+			Ingresso:      brinquedos.Brinquedos[e].Ingresso,
+			Espaco:        brinquedos.Brinquedos[e].Espaco,
+			QuantidadeMax: brinquedos.Brinquedos[e].QuantidadeMax,
+			Code:          brinquedos.Brinquedos[e].Code,
 		}
 		ToysList = append(ToysList, brinquedo)
 	}
@@ -70,7 +70,7 @@ func main() {
 		vezes             int
 		Opcoes            string
 		MenuDecompras     string
-		espaco_disponivel int
+		Espaco_disponivel int
 	)
 	Opcoes = "1 - Menu de Compras \n2 - Vender um brinquedo\n3 - Passar um dia\n4- Passar uma semana"
 	MenuDecompras = "O que deseja comprar?\n1- Lotes\n2-Brinquedos\n"
@@ -84,7 +84,7 @@ func main() {
 		fmt.Printf("Ok, então volte sempre que quiser\n")
 	}
 	if comecou {
-		espaco_disponivel = 1000
+		Espaco_disponivel = 1000
 		saldo_jogador, err := strconv.Atoi(player.saldo)
 		if err != nil {
 			log.Fatal(err)
@@ -97,8 +97,8 @@ func main() {
 		valores := []int{}
 		renda_jogador := []int{}
 		brinquedo2 := ToysList[0]
-		renda_jogador = append(renda_jogador, renda(brinquedo2.popularidade, brinquedo2.ingresso))
-		myToys = append(myToys, brinquedo2.nome)
+		renda_jogador = append(renda_jogador, renda(brinquedo2.Popularidade, brinquedo2.Ingresso))
+		myToys = append(myToys, brinquedo2.Nome)
 		for comando != "Q" {
 			z = 0
 			fmt.Printf("\n\nSaldo: %d\n", saldo_jogador)
@@ -124,15 +124,15 @@ func main() {
 				listaBrinquedos()
 				fmt.Scanf("%d\n", &index)
 				brinquedoComprado := ToysList[index-1]
-				if brinquedoComprado.custo > saldo_jogador {
+				if brinquedoComprado.Custo > saldo_jogador {
 					fmt.Printf("Você não tem dinheiro o suficiente\n")
 				} else {
-					if brinquedoComprado.espaco > espaco_disponivel {
+					if brinquedoComprado.Espaco > Espaco_disponivel {
 						fmt.Printf("Você não tem espaço suficiente\n")
 					}
-					saldo_jogador -= brinquedoComprado.custo
-					fmt.Printf("Parabéns voce comprou o(a) %s", brinquedoComprado.nome)
-					myToys = append(myToys, brinquedoComprado.nome)
+					saldo_jogador -= brinquedoComprado.Custo
+					fmt.Printf("Parabéns voce comprou o(a) %s", brinquedoComprado.Nome)
+					myToys = append(myToys, brinquedoComprado.Nome)
 				}
 			}
 			if comando == "2" || comando == "Vender um brinquedo" {
@@ -167,7 +167,7 @@ func listaBrinquedos() {
 	j := 1
 	for i != len(ToysList) {
 		brinquedo := ToysList[i]
-		fmt.Printf("%d- %s\nCusto: %d\nPopularidade: %0.f\n", j, brinquedo.nome, brinquedo.custo, math.Round(brinquedo.popularidade))
+		fmt.Printf("%d- %s\nCusto: %d\nPopularidade: %0.f\n", j, brinquedo.Nome, brinquedo.Custo, math.Round(brinquedo.Popularidade))
 		i++
 		j++
 	}
