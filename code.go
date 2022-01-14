@@ -16,6 +16,14 @@ import (
 type jogador struct {
 	saldo string
 }
+type Lotes struct {
+	Lotes []Lote `json:"lotes"`
+}
+type Lote struct {
+	Nome   string `json:"nome"`
+	Custo  int    `json:"custo"`
+	Espaco int    `json:"espaco"`
+}
 type Brinquedos struct {
 	Brinquedos []Brinquedo `json:"brinquedos"`
 }
@@ -26,27 +34,38 @@ type Brinquedo struct {
 	Ingresso      int     `json:"ingresso"`
 	Espaco        int     `json:"espaco"`
 	QuantidadeMax int     `json:"quantidademax"`
-	Code          string  `json:"code"`
+	Code          int     `json:"code"`
 }
 type Quantidade struct {
-	Montanha  int
-	bate_bate int
-	carrosel  int
-	kami_kaze int
-	roda      int
+	aux int
 }
 
 var fileScanner *bufio.Scanner
 var ToysList []Brinquedo
+var LotesList []Lote
 
 func main() {
+	quantidades := []int{}
 	rand.Seed(time.Now().UnixNano())
 	jsonFile, err := os.Open("brinquedos.json")
+	jsonFile2, err2 := os.Open("lotes.json")
 	if err != nil {
 		log.Fatalf("Can't %s", err)
 	}
+	if err2 != nil {
+		log.Fatalf("Can't %s", err2)
+	}
 	textoFile, _ := ioutil.ReadAll(jsonFile)
+	textoFile2, _ := ioutil.ReadAll(jsonFile2)
 	var brinquedos Brinquedos
+	var lotes Lotes
+	for e := 0; e < len(brinquedos.Brinquedos); e++ {
+		quantidade := Quantidade{
+			aux: brinquedos.Brinquedos[e].Code,
+		}
+		quantidades = append(quantidades, quantidade.aux)
+	}
+	json.Unmarshal(textoFile2, &lotes)
 	json.Unmarshal(textoFile, &brinquedos)
 	for e := 1; e < len(brinquedos.Brinquedos); e++ {
 		brinquedo := Brinquedo{
@@ -60,6 +79,14 @@ func main() {
 		}
 		ToysList = append(ToysList, brinquedo)
 	}
+	for i := 0; i < len(lotes.Lotes); i++ {
+		lote := Lote{
+			Nome:   lotes.Lotes[i].Nome,
+			Custo:  lotes.Lotes[i].Custo,
+			Espaco: lotes.Lotes[i].Espaco,
+		}
+		LotesList = append(LotesList, lote)
+	}
 	player := jogador{
 		saldo: "1000000",
 	}
@@ -69,11 +96,13 @@ func main() {
 		comecou           bool
 		vezes             int
 		Opcoes            string
-		MenuDecompras     string
+		MenuDeCompras     string
 		Espaco_disponivel int
+		MenuDeVendas      string
 	)
-	Opcoes = "1 - Menu de Compras \n2 - Vender um brinquedo\n3 - Passar um dia\n4- Passar uma semana"
-	MenuDecompras = "O que deseja comprar?\n1- Lotes\n2-Brinquedos\n"
+	Opcoes = "1 - Menu de Compras \n2 - Menu de Vendas\n3 - Passar um dia\n4- Passar uma semana"
+	MenuDeCompras = "O que deseja comprar?\n1- Lotes\n2-Brinquedos"
+	MenuDeVendas = "O que deseja vender?\n1- Lotes\n2- Brinquedos"
 	Introdução = "Bem Vinda(o) ao MyAmusementPark\n Neste jogo você pode criar o seu propio parque de diversões! \n Deseja Começar?\n 1-Sim\n 2-Não"
 	fmt.Println(Introdução)
 	fmt.Scanf("%s", &comando)
@@ -93,94 +122,189 @@ func main() {
 		i := 0
 		z := 0
 		vezes = 0
-		myToys := []string{}
-		valores := []int{}
-		renda_jogador := []int{}
-		brinquedo2 := ToysList[0]
-		renda_jogador = append(renda_jogador, renda(brinquedo2.Popularidade, brinquedo2.Ingresso))
-		myToys = append(myToys, brinquedo2.Nome)
+		dia := 1
+
+		myToys := []Brinquedo{}
+		meusLotes := []Lote{}
+		pessoas := []int{}
+		dias := []int{}
+		sas1 := []int{0, 0, 0, 00, 00, 00, 0, 00, 0, 0, 0, 0, 0, 0}
+		sas2 := []int{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+		array := [][]int{sas1, sas2}
+		//quantidades := []int{}
+		//quantidades = append(quantidades,Quantidade)
+		brinquedo2 := brinquedos.Brinquedos[0]
+		var p int
+		p = int(brinquedo2.Popularidade)
+		array[0][0] = p
+		array[1][0] = brinquedo2.Ingresso
+		myToys = append(myToys, brinquedos.Brinquedos[0])
+		pessoas = append(pessoas, population(brinquedo2.Popularidade))
 		for comando != "Q" {
 			z = 0
-			fmt.Printf("\n\nSaldo: %d\n", saldo_jogador)
-			fmt.Printf("Brinquedos Atuais: \n")
+			fmt.Printf("Dia %d\n\n", dia)
+			fmt.Printf("Espaço disponível: %d\n", Espaco_disponivel)
+			fmt.Printf("Saldo: %d\n", saldo_jogador)
+			fmt.Printf("Brinquedos Atuais: \n\n")
 			for z != len(myToys) {
-				fmt.Printf("%s\n", myToys[z])
+				fmt.Printf("%d - \nNome: %s\nPopularidade: %.0f\nCusto Mensal: %d\n", z+1, myToys[z].Nome, myToys[z].Popularidade, myToys[z].Custo)
 				z++
 			}
 			if vezes > 1 {
-				fmt.Printf("Oque deseja fazer agora?\n")
+				fmt.Printf("\n\nOque deseja fazer agora?\n")
 			} else {
-				fmt.Printf("Oque deseja fazer logo de inicio?\n")
+				fmt.Printf("\n\nOque deseja fazer logo de inicio?\n")
 			}
 			fmt.Println(Opcoes)
 			fmt.Scanf("%s", &comando)
-			if comando == "1" || comando == "Menu de compras" {
-				fmt.Println(MenuDecompras)
+			switch comando {
+			case "1":
+				fmt.Println(MenuDeCompras)
 				fmt.Scanf("%s", &comando)
-				if comando == "1" {
-				}
-				if comando == "2" {
-				}
-				listaBrinquedos()
-				fmt.Scanf("%d\n", &index)
-				brinquedoComprado := ToysList[index-1]
-				if brinquedoComprado.Custo > saldo_jogador {
-					fmt.Printf("Você não tem dinheiro o suficiente\n")
-				} else {
-					if brinquedoComprado.Espaco > Espaco_disponivel {
-						fmt.Printf("Você não tem espaço suficiente\n")
+				switch comando {
+				case "1":
+					listaLotes()
+					fmt.Scanf("%d", &index)
+					LoteComprado := LotesList[index-1]
+					if LoteComprado.Custo > saldo_jogador {
+						fmt.Printf("Você não tem dinheiro o suficiente\n")
 					}
-					saldo_jogador -= brinquedoComprado.Custo
-					fmt.Printf("Parabéns voce comprou o(a) %s", brinquedoComprado.Nome)
-					myToys = append(myToys, brinquedoComprado.Nome)
+					fmt.Printf("Parabéns voce comprou o(a) %s\n", LoteComprado.Nome)
+					meusLotes = append(meusLotes, LoteComprado)
+					Espaco_disponivel += LoteComprado.Espaco
+				case "2":
+					listaBrinquedos()
+					fmt.Scanf("%d", &index)
+					brinquedoComprado := ToysList[index-1]
+					if brinquedoComprado.Custo > saldo_jogador {
+						fmt.Printf("Você não tem dinheiro o suficiente\n")
+					} else {
+						if brinquedoComprado.Espaco > Espaco_disponivel {
+							fmt.Printf("Você não tem espaço suficiente\n")
+						} else {
+							if quantidades[brinquedoComprado.Code] > brinquedoComprado.QuantidadeMax {
+								fmt.Printf("Você atingiu a maxima quantidade desse brinquedo\n")
+							} else {
+								if quantidades[brinquedoComprado.Code] == brinquedoComprado.QuantidadeMax {
+									ToysList = remove2(ToysList, brinquedoComprado.Code)
+								} else {
+									m := 1
+									saldo_jogador -= brinquedoComprado.Custo
+									fmt.Printf("Parabéns voce comprou o(a) %s\n", brinquedoComprado.Nome)
+									myToys = append(myToys, brinquedoComprado)
+									dias = append(dias, dia)
+									pessoas = append(pessoas, population(brinquedoComprado.Popularidade))
+									var j int = int(brinquedoComprado.Popularidade)
+									array[0][m] = j
+									array[1][m] = brinquedoComprado.Ingresso
+									m++
+								}
+							}
+						}
+					}
 				}
-			}
-			if comando == "2" || comando == "Vender um brinquedo" {
+			case "2":
+				fmt.Println(MenuDeVendas)
+				fmt.Scanf("%s", &comando)
+				switch comando {
+				case "1":
+				}
 				for i != len(myToys) {
-					fmt.Printf("%d - %s\n Valor: %d", i+1, myToys[i], valores[i])
+					fmt.Printf("%d - %s\n Valor: ", i+1, myToys[i].Nome)
 					i++
 				}
 				fmt.Scanf("%d", &index)
-				myToys = remove(myToys, index-1)
-				saldo_jogador += valores[index-1]
-
-			}
-			if comando == "3" || comando == "Passar um dia" {
+				myToys = remove2(myToys, index-1)
+			case "3":
+				Total := reduceSoma(pessoas)
+				RendaDeHoje := exe(array, len(sas1))
+				fmt.Printf("Hoje vieram %d pessoas ao parque\n", Total)
+				fmt.Printf("Lucro de hoje: %d\n", RendaDeHoje)
 				timer := time.NewTimer(3 * time.Second)
 				fmt.Printf("Passando o dia (Aguarde 3 segundos)\n")
 				<-timer.C
-				if len(renda_jogador) == 1 {
-
+				saldo_jogador += RendaDeHoje
+				for i := 0; i < len(dias); i++ {
+					dias[i] += 1
+					if dias[i] == 30 {
+						saldo_jogador = myToys[i].Custo
+					}
 				}
-			}
-			if comando == "4" || comando == "Passar uma semana" {
+			case "4":
+				var semana int
+				for i := 0; i < 7; i++ {
+					semana += exe(array, len(sas1))
+				}
 				timer2 := time.NewTimer(7 * time.Second)
+				Total := reduceSoma(pessoas)
+				fmt.Printf("Essa semana vieram %d pessoas ao parque\n", Total)
+				fmt.Printf("Lucro dessa semana: %d\n", semana)
 				fmt.Printf("Passando a semana(Aguarde 7 segundos)\n")
 				<-timer2.C
+				for i := 0; i < len(dias); i++ {
+					dias[i] += 7
+					if dias[i] == 30 {
+						saldo_jogador = myToys[i].Custo
+					}
+				}
+				vezes++
 			}
-			vezes++
 		}
 	}
 }
 func listaBrinquedos() {
-	i := 0
-	j := 1
+	i := 1
 	for i != len(ToysList) {
 		brinquedo := ToysList[i]
-		fmt.Printf("%d- %s\nCusto: %d\nPopularidade: %0.f\n", j, brinquedo.Nome, brinquedo.Custo, math.Round(brinquedo.Popularidade))
+		fmt.Printf("\n%d- %s\nCusto: %d\nPopularidade: %0.f\nEspaço: %d\nIngresso: %d\n", i, brinquedo.Nome, brinquedo.Custo, math.Round(brinquedo.Popularidade), brinquedo.Espaco, brinquedo.Ingresso)
+		i++
+	}
+}
+func listaLotes() {
+	i := 0
+	j := 0
+	for i != len(LotesList) {
+		lote := LotesList[i]
+		fmt.Printf("\n%d- %s\nCusto: %d\n", j, lote.Nome, lote.Custo)
 		i++
 		j++
 	}
 }
-
 func remove(slice []string, s int) []string {
 	return append(slice[:s], slice[s+1:]...)
 }
-func renda(s float64, r int) int {
-	populacao := 0
+func remove2(slice []Brinquedo, s int) []Brinquedo {
+	return append(slice[:s], slice[s+1:]...)
+}
+func renda(s int, r int) int {
+	s *= 10
+	n := rand.Intn(100)
+	v := rand.Intn(100)
+	l := rand.Intn(100)
+	q := (s + n + v + l) / 4
+	q /= 5
+	w := r * q
+	return w
+}
+func population(s float64) int {
 	s = math.Round(s)
 	var y int = int(s)
-	populacao = y*rand.Intn(100) + 100
-	w := r * populacao
-	return w
+	return y*rand.Intn(100) + 400
+}
+func reduceSoma(s []int) int {
+	sum := 0
+	for i := 0; i < len(s); i++ {
+		sum += s[i]
+	}
+	return sum
+}
+func exe(array [][]int, size int) int {
+	var rend int
+	for i := 0; i < size; i++ {
+		rend += renda(population2(array[0][i]), array[1][i])
+	}
+	return rend
+}
+func population2(s int) int {
+	return s*rand.Intn(100) + 400
 }

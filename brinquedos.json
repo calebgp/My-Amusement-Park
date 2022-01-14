@@ -7,7 +7,7 @@
             "ingresso": 8,
             "espaco": 200,
             "quantidademax": 2,
-            "code": "c-h"
+            "code": 0
         },
         {
             "nome": "Bate-Bate",
@@ -16,7 +16,7 @@
             "ingresso": 15,
             "espaco": 200,
             "quantidademax": 2,
-            "code": "b-b"
+            "code": 1
         },
         {
             "nome": "Carrossel",
@@ -25,7 +25,7 @@
             "ingresso": 20,
             "espaco": 150,
             "quantidademax": 2,
-            "code": "crr"
+            "code": 2
         },
         {
             "nome": "Kami-Kaze",
@@ -34,25 +34,25 @@
             "ingresso": 20,
             "espaco": 400,
             "quantidademax": 1,
-            "code": "k-k"
+            "code": 3
         },
         {
             "nome": "Roda-Gigante",
-            "custo": "800000",
+            "custo": 800000,
             "popularidade": 7.5,
             "ingresso": 10,
             "espaco": 550,
             "quantidademax": 1,
-            "code": "r-g"
+            "code": 4
         },
         {
             "nome": "Montanha-Russa",
-            "custo": "1000000",
+            "custo": 1000000,
             "popularidade": 8.5,
             "ingresso": 17,
             "espaco": 700,
             "quantidademax": 3,
-            "code": "m-r"
+            "code": 5
         }
     ]
 }

@@ -1,0 +1,35 @@
+
+{
+    "lotes": [
+        {
+            "nome": "Lote de 200 de espaço",
+            "custo": 12, 
+            "espaco": 200
+        },
+        {
+            "nome": "Lote de 200 de espaço",
+            "custo": 12,
+            "espaco": 200 
+        },
+        {
+            "nome": "Lote de 200 de espaço",
+            "custo": 12,
+            "espaco": 200
+        },
+        {
+            "nome": "Lote de 200 de espaço",
+            "custo": 12,
+            "espaco": 200 
+        },
+        {
+            "nome": "Lote de 200 de espaço",
+            "custo": 12,
+            "espaco": 200
+        },
+        {
+            "nome": "Lote de 200 de espaço",
+            "custo": 12,
+            "espaco": 200
+        }
+    ]
+}
